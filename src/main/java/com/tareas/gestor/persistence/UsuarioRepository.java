@@ -42,4 +42,11 @@ public class UsuarioRepository implements UserRepository {
     public void delete(int userId) {
         usuarioCrudRepository.deleteById(userId);
     }
+
+    @Override
+    public Optional<User> getByEmail(String email) {
+        return usuarioCrudRepository.findByCorreoElectronico(email)
+                .map(mapper::toUser);
+    }
+
 }

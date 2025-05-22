@@ -35,6 +35,18 @@ public class AuthService {
     }
 
     public LoginResponse register(RegisterRequest request) {
+        // Validar dominio del correo
+        if (!request.getEmail().endsWith("@poligran.edu.co")) {
+            return new LoginResponse(null, null, null, null, "❌ Solo se permiten correos de dominio @poligran.edu.co");
+        }
+
+        // Validar si el correo ya existe
+        Optional<User> existingUser = usuarioRepository.getByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            return new LoginResponse(null, null, null, null, "❌ El correo ya está registrado");
+        }
+
+        // Crear y guardar nuevo usuario
         User newUser = new User();
         newUser.setFirstName(request.getFirstName());
         newUser.setLastName(request.getLastName());
@@ -49,7 +61,7 @@ public class AuthService {
                 savedUser.getFirstName(),
                 savedUser.getLastName(),
                 savedUser.getEmail(),
-                "Usuario registrado exitosamente"
+                "✅ Usuario registrado exitosamente"
         );
     }
 }
